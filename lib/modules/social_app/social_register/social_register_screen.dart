@@ -8,6 +8,7 @@ import 'package:scoial_app/shared/components/components.dart';
 
 
 
+// ignore: must_be_immutable
 class SocialRegisterScreen extends StatelessWidget
 {
   var formKey = GlobalKey<FormState>();
