@@ -2,7 +2,9 @@ class SocialUserModel
 {
   String name;
   String email;
+  String image;
   String phone;
+  String bio;
   String uId;
   bool isEmailVerified;
 
@@ -12,6 +14,8 @@ class SocialUserModel
     this.name,
     this.email,
     this.phone,
+    this.bio,
+    this.image,
     this.uId,
     this.isEmailVerified,
 });
@@ -20,6 +24,8 @@ class SocialUserModel
   {
     email = json['email'];
     name = json['name'];
+    image = json['image'];
+    bio = json['bio'];
     phone = json['phone'];
     uId = json['uId'];
     isEmailVerified = json['isEmailVerified'];

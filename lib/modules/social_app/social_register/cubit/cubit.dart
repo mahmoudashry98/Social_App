@@ -43,9 +43,11 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
   }) {
     SocialUserModel model = SocialUserModel(
       email: email,
+      image: 'https://image.freepik.com/free-photo/waist-up-shot-emotive-caucasian-man-has-surprised-facial-expression-raises-hands-fists_273609-44802.jpg',
       name: name,
       phone: phone,
       uId: uId,
+      bio:'write you bio ...',
       isEmailVerified: false,
     );
 
