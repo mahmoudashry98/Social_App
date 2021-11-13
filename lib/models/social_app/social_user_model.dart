@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class SocialUserModel
 {
   String name;
@@ -12,14 +14,14 @@ class SocialUserModel
 
   SocialUserModel(
   {
-    this.name,
-    this.email,
-    this.phone,
-    this.bio,
-    this.image,
-    this.cover,
-    this.uId,
-    this.isEmailVerified,
+    @required this.name,
+    @required this.email,
+    @required this.phone,
+    @required this.bio,
+    @required this.image,
+    @required this.cover,
+    @required this.uId,
+    @required this.isEmailVerified,
 });
 
   SocialUserModel.fromJson(Map<String, dynamic>json)

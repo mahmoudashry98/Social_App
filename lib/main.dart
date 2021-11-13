@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
   final Widget startWidget;
   MyApp({
     //this.isDark,
-    this.startWidget});
+   this.startWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({ Key key, this.title}) : super(key: key);
 
   final String title;
 
