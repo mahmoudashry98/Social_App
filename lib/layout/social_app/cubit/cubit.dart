@@ -85,9 +85,9 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   void uploadProfileImage({
-  @required String name,
-  @required String phone,
-  @required String bio,
+    @required String name,
+    @required String phone,
+    @required String bio,
   }) {
     emit(SocialUserUpdateLoadingState());
     firebase_storage.FirebaseStorage.instance
@@ -99,9 +99,9 @@ class SocialCubit extends Cubit<SocialStates> {
         //emit(SocialUploadProfileImageSuccessState());
         print(value);
         updateUser(
-            name: name,
-            phone: phone,
-            bio: bio,
+          name: name,
+          phone: phone,
+          bio: bio,
           image: value,
         );
       }).catchError((error) {
@@ -112,7 +112,6 @@ class SocialCubit extends Cubit<SocialStates> {
       emit(SocialUploadProfileImageErrorState());
     });
   }
-
 
   void uploadCoverImage({
     @required String name,
@@ -167,15 +166,14 @@ class SocialCubit extends Cubit<SocialStates> {
     @required String name,
     @required String phone,
     @required String bio,
-    String cover ,
+    String cover,
     String image,
-
   }) {
     SocialUserModel model = SocialUserModel(
       name: name,
       email: userModel.email,
-      image: image??userModel.image,
-      cover: cover??userModel.cover,
+      image: image ?? userModel.image,
+      cover: cover ?? userModel.cover,
       uId: userModel.uId,
       phone: phone,
       bio: bio,
@@ -208,14 +206,14 @@ class SocialCubit extends Cubit<SocialStates> {
     }
   }
 
-  void removePostImage(){
+  void removePostImage() {
     postImage = null;
     emit(SocialRemovePostImageState());
   }
+
   void uploadPostImage({
     @required String text,
     @required String dateTime,
-
   }) {
     emit(SocialCreatePostLoadingState());
     firebase_storage.FirebaseStorage.instance
@@ -243,16 +241,15 @@ class SocialCubit extends Cubit<SocialStates> {
     @required String text,
     @required String dateTime,
     String postImage,
-
   }) {
     emit(SocialCreatePostLoadingState());
 
     PostModel model = PostModel(
       name: userModel.name,
-      image:userModel.image,
+      image: userModel.image,
       uId: userModel.uId,
-      postImage: postImage?? '',
-      text: dateTime,
+      postImage: postImage ?? '',
+      text: text,
       dateTime: dateTime,
     );
 
@@ -260,9 +257,28 @@ class SocialCubit extends Cubit<SocialStates> {
         .collection('posts')
         .add(model.toMap())
         .then((value) {
-          emit(SocialCreatePostSuccessState());
+      emit(SocialCreatePostSuccessState());
     }).catchError((error) {
       emit(SocialCreatePostErrorState());
+    });
+  }
+  List <PostModel> posts=[];
+
+  void getPosts() {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .get()
+        .then((value)
+    {
+      value.docs.forEach((element)
+      {
+        posts.add(PostModel.fromJson(element.data()));
+      });
+
+      emit(SocialGetPostSuccessState());
+    }).catchError((error)
+    {
+      emit(SocialGetPostErrorState(error.toString()));
     });
   }
 }

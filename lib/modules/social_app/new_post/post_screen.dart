@@ -5,7 +5,9 @@ import 'package:scoial_app/layout/social_app/cubit/states.dart';
 import 'package:scoial_app/shared/components/components.dart';
 
 class NewPostScreen extends StatelessWidget {
+
   var textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
