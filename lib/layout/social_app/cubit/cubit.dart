@@ -389,5 +389,28 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+  List<MessageModel> message = [];
+
+  void getMessages({@required String receiverId})
+  {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userModel.uId)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .orderBy('dateTime')
+        .snapshots()
+        .listen((event)
+    {
+      message = [];
+      event.docs.forEach((element)
+      {
+        message.add(MessageModel.fromJson(element.data()));
+      });
+      emit(SocialGetMessagesSuccessState());
+    });
+  }
+
 
 }

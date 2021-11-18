@@ -36,8 +36,6 @@ class SocialSendMessageErrorState extends SocialStates {}
 
 class SocialGetMessagesSuccessState extends SocialStates {}
 
-class SocialGetMessagesErrorState extends SocialStates {}
-
 
 ///Get posts
 
