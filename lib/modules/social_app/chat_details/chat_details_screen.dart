@@ -9,7 +9,6 @@ import 'package:scoial_app/shared/style/color/color.dart';
 
 // ignore: must_be_immutable
 class ChatDetailsScreen extends StatelessWidget {
-
   var messageController = TextEditingController();
   SocialUserModel userModel;
 
@@ -18,52 +17,50 @@ class ChatDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Builder(
-      builder: (BuildContext context)
-      {
+      builder: (BuildContext context) {
         SocialCubit.get(context).getMessages(receiverId: userModel.uId);
 
-        return  BlocConsumer<SocialCubit, SocialStates>(
+        return BlocConsumer<SocialCubit, SocialStates>(
           listener: (context, state) {},
           builder: (context, state) {
+            var messages = SocialCubit.get(context).message;
             return Scaffold(
               appBar: AppBar(
                 titleSpacing: 0.0,
                 title: Row(
-                  children:
-                  [
+                  children: [
                     CircleAvatar(
                       radius: 20.0,
-                      backgroundImage: NetworkImage(
-                          userModel.image
-                      ),
+                      backgroundImage: NetworkImage(userModel.image),
                     ),
                     SizedBox(
-                      width:
-                      15.0,
+                      width: 15.0,
                     ),
                     Text(userModel.name),
                   ],
                 ),
               ),
               body: ConditionalBuilder(
-                condition: SocialCubit.get(context).message.length >0,
+                condition: SocialCubit.get(context).message.length > 0,
                 builder: (context) => Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
-                    children:
-                    [
+                    children: [
                       Expanded(
                         child: ListView.separated(
                           physics: BouncingScrollPhysics(),
-                          itemBuilder: (context, index)
-                          {
-                            var message =SocialCubit.get(context).message[index];
-                            if(SocialCubit.get(context).userModel.uId == message.senderId)
+                          itemBuilder: (context, index) {
+                            var message =
+                                SocialCubit.get(context).message[index];
+                            if (SocialCubit.get(context).userModel.uId ==
+                                message.senderId)
                               return buildMyMessage(message);
 
                             return buildMessage(message);
                           },
-                          separatorBuilder: (context, index) => SizedBox(height: 15.0,),
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: 15.0,
+                          ),
                           itemCount: SocialCubit.get(context).message.length,
                         ),
                       ),
@@ -78,11 +75,11 @@ class ChatDetailsScreen extends StatelessWidget {
                         ),
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         child: Row(
-                          children:
-                          [
+                          children: [
                             Expanded(
                               child: Padding(
-                                padding: EdgeInsetsDirectional.only(start: 10.0),
+                                padding:
+                                    EdgeInsetsDirectional.only(start: 10.0),
                                 child: TextFormField(
                                   controller: messageController,
                                   decoration: InputDecoration(
@@ -96,8 +93,7 @@ class ChatDetailsScreen extends StatelessWidget {
                               height: 50.0,
                               color: defaultColor,
                               child: MaterialButton(
-                                onPressed: ()
-                                {
+                                onPressed: () {
                                   SocialCubit.get(context).sendMessage(
                                     receiverId: userModel.uId,
                                     dateTime: DateTime.now().toString(),
@@ -118,7 +114,60 @@ class ChatDetailsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                fallback: (context) => Center(child: CircularProgressIndicator()),
+                fallback: (context) => messages.length == 0
+                    ? Column(
+                        children: [
+                          Spacer(),
+                          Center(
+                            child: Text('No Messages yet'),
+                          ),
+                          Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Container(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              height: 50,
+                              padding: EdgeInsetsDirectional.only(
+                                start: 15,
+                                end: 0,
+                              ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                  )),
+                              child: TextFormField(
+                                controller: messageController,
+                                maxLines: 999,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Aa',
+                                  suffixIcon: MaterialButton(
+                                    height: 10,
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () async {
+                                      SocialCubit.get(context).sendMessage(
+                                        receiverId: userModel.uId,
+                                        text: messageController.text,
+                                        dateTime: TimeOfDay.now().toString(),
+                                      );
+                                      messageController.clear();
+                                    },
+                                    color: Colors.blue,
+                                    elevation: 10,
+                                    minWidth: 1,
+                                    child: Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Center(child: CircularProgressIndicator()),
               ),
             );
           },
@@ -128,40 +177,32 @@ class ChatDetailsScreen extends StatelessWidget {
   }
 
   Widget buildMessage(MessageModel model) => Align(
-    alignment: AlignmentDirectional.centerStart,
-    child: Container(
-      padding: EdgeInsets.symmetric(
-          vertical: 5.0, horizontal: 10.0),
-      decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadiusDirectional.only(
-            bottomEnd: Radius.circular(10.0),
-            topStart: Radius.circular(10.0),
-            topEnd: Radius.circular(10.0),
-          )
-      ),
-      child: Text(
-          '${model.text}'
-      ),
-    ),
-  );
+        alignment: AlignmentDirectional.centerStart,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+          decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadiusDirectional.only(
+                bottomEnd: Radius.circular(10.0),
+                topStart: Radius.circular(10.0),
+                topEnd: Radius.circular(10.0),
+              )),
+          child: Text('${model.text}'),
+        ),
+      );
 
   Widget buildMyMessage(MessageModel model) => Align(
-    alignment: AlignmentDirectional.centerEnd,
-    child: Container(
-      padding: EdgeInsets.symmetric(
-          vertical: 5.0, horizontal: 10.0),
-      decoration: BoxDecoration(
-          color: defaultColor.withOpacity(0.2),
-          borderRadius: BorderRadiusDirectional.only(
-            bottomStart: Radius.circular(10.0),
-            topStart: Radius.circular(10.0),
-            topEnd: Radius.circular(10.0),
-          )
-      ),
-      child: Text(
-          '${model.text}'
-      ),
-    ),
-  );
+        alignment: AlignmentDirectional.centerEnd,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+          decoration: BoxDecoration(
+              color: defaultColor.withOpacity(0.2),
+              borderRadius: BorderRadiusDirectional.only(
+                bottomStart: Radius.circular(10.0),
+                topStart: Radius.circular(10.0),
+                topEnd: Radius.circular(10.0),
+              )),
+          child: Text('${model.text}'),
+        ),
+      );
 }

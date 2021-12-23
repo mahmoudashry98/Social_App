@@ -27,11 +27,11 @@ class EditProfileScreen extends StatelessWidget {
             actions: [
               defaultTextButton(
                 function: () {
-                  // SocialCubit.get(context).updateUserImages(
-                  //   name: nameController.text,
-                  //   phone: phoneController.text,
-                  //   bio: bioController.text,
-                  // );
+                  SocialCubit.get(context).updateUser(
+                    name: nameController.text,
+                    phone: phoneController.text,
+                    bio: bioController.text,
+                  );
                 },
                 text: 'Update',
               ),

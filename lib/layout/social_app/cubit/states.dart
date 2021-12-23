@@ -117,6 +117,14 @@ class SocialPostImagePickedErrorState extends SocialStates {}
 
 class SocialRemovePostImageState extends SocialStates {}
 
+class SocialLogOutSuccessState extends SocialStates {}
+
+class SocialLogOutErrorState extends SocialStates {
+  final String error;
+
+  SocialLogOutErrorState(this.error);
+}
+
 
 
 

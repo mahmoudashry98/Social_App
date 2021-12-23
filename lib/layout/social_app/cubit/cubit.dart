@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,9 +12,12 @@ import 'package:scoial_app/modules/social_app/chats/chats_screen.dart';
 import 'package:scoial_app/modules/social_app/feeds/feeds_screen.dart';
 import 'package:scoial_app/modules/social_app/new_post/post_screen.dart';
 import 'package:scoial_app/modules/social_app/settings/settings_screen.dart';
+import 'package:scoial_app/modules/social_app/social_login/social_login_screen.dart';
 import 'package:scoial_app/modules/social_app/users/users_screen.dart';
+import 'package:scoial_app/shared/components/components.dart';
 import 'package:scoial_app/shared/components/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:scoial_app/shared/network/local/cache_helper.dart';
 
 class SocialCubit extends Cubit<SocialStates> {
   SocialCubit() : super(SocialInitialState());
@@ -23,6 +27,7 @@ class SocialCubit extends Cubit<SocialStates> {
   SocialUserModel userModel;
 
   void getUserData() {
+    uId = CacheHelper.getData(key: 'uId') ;
     emit(SocialGetUserLoadingState());
 
     FirebaseFirestore.instance.collection('users').doc(uId).get().then((value) {
@@ -46,8 +51,8 @@ class SocialCubit extends Cubit<SocialStates> {
   List<String> title = ['Home', 'Chats', 'New Post', 'Users', 'Settings'];
 
   void changeBottomNav(int index) {
-    if(index == 1)
-      getUsers();
+    if(index == 1) getUsers();
+    if(index == 4) getUserData();
     if (index == 2)
       emit(SocialNewPostState());
     else {
@@ -288,11 +293,10 @@ class SocialCubit extends Cubit<SocialStates> {
           likes.add(value.docs.length);
           postsId.add(element.id);
           posts.add(PostModel.fromJson(element.data()));
-        }).catchError((error){});
+          emit(SocialGetPostSuccessState());
+        });
 
       });
-
-      emit(SocialGetPostSuccessState());
     }).catchError((error)
     {
       emit(SocialGetPostErrorState(error.toString()));
@@ -308,7 +312,7 @@ class SocialCubit extends Cubit<SocialStates> {
         .set({
       'like': true,
     })
-        .then((value) 
+        .then((value)
     {
       emit(SocialLikePostSuccessState());
     }).catchError((error){
@@ -328,10 +332,11 @@ class SocialCubit extends Cubit<SocialStates> {
     {
       value.docs.forEach((element)
       {
-        if(element.data()['uId'] != userModel.uId)
-          users.add(SocialUserModel.fromJson(element.data()));
+        if(element.data()['uId'] != userModel.uId) {
+            users.add(SocialUserModel.fromJson(element.data()));
 
-      });
+          }
+        });
 
       emit(SocialGetAllUsersSuccessState());
     }).catchError((error)
@@ -409,6 +414,26 @@ class SocialCubit extends Cubit<SocialStates> {
         message.add(MessageModel.fromJson(element.data()));
       });
       emit(SocialGetMessagesSuccessState());
+    });
+  }
+
+  Future<void> logOut(context) async {
+    await FirebaseAuth.instance.signOut().then((value) {
+      users = [];
+      // messages = [];
+      posts = [];
+      postsId = [];
+      likes = [];
+      profileImage = null;
+      coverImage = null;
+      userModel = null;
+      uId = '';
+      CacheHelper.removeData(key: 'uId');
+      navigateAndFinish(context, SocialLoginScreen());
+      currentIndex = 0;
+      emit(SocialLogOutSuccessState());
+    }).catchError((error) {
+      emit(SocialLogOutErrorState(error.toString()));
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scoial_app/layout/social_app/cubit/cubit.dart';
 import 'package:scoial_app/layout/social_app/social_layout.dart';
 import 'package:scoial_app/modules/social_app/social_login/cubit/cubit.dart';
 import 'package:scoial_app/modules/social_app/social_register/social_register_screen.dart';
@@ -24,7 +25,10 @@ class SocialLoginScreen extends StatelessWidget {
         {
           if(state is SocialLoginErrorState)
           {
-            showToast(text: state.error, state: ToastStates.ERROR);
+            showToast(
+              text: state.error,
+              state: ToastStates.ERROR,
+            );
           }
           if(state is SocialLoginSuccessState)
           {
@@ -32,6 +36,12 @@ class SocialLoginScreen extends StatelessWidget {
               key: 'uId',
               value: state.uId,
             ).then((value) {
+              SocialCubit.get(context).getUserData();
+              SocialCubit.get(context).getPosts();
+              showToast(
+                text: 'Welcome in Social App',
+                state: ToastStates.SUCCESS,
+              );
               navigateAndFinish(
                 context,
                 SocialLayout(),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scoial_app/modules/social_app/social_login/cubit/states.dart';
 
+
 class SocialLoginCubit extends Cubit<SocialLoginStates> {
   SocialLoginCubit() : super(SocialLoginInitialState());
 
@@ -40,4 +41,5 @@ class SocialLoginCubit extends Cubit<SocialLoginStates> {
 
     emit(SocialChangePasswordVisibilityState());
   }
+
 }

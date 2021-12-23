@@ -1,5 +1,5 @@
-
-
+import 'package:scoial_app/layout/social_app/cubit/cubit.dart';
+import 'package:scoial_app/modules/social_app/social_login/social_login_screen.dart';
 import 'package:scoial_app/shared/components/components.dart';
 import 'package:scoial_app/shared/network/local/cache_helper.dart';
 
@@ -11,23 +11,29 @@ import 'package:scoial_app/shared/network/local/cache_helper.dart';
 /// method(url) : v2/top-headlines?
 /// queries : country=eg&category=business&apiKey=65f7f556ec76449fa7dc7c0069f040ca
 
-void signOut(context){
-  CacheHelper.removeData(key: 'token').then((value) {
-    if (value) {
-      // navigateAndFinish(
-      //   context,
-      //   ShopLoginScreen(),
-      // );
-    }
-  });
+String token = '';
+
+String uId = '';
+
+void signOut(context) {
+
+  CacheHelper.removeData(key:'uId');
+  // uId = CacheHelper.getData(key: 'uId');
+  navigateAndFinish(
+    context,
+    SocialLoginScreen(),
+  );
+  SocialCubit.get(context).currentIndex=0;
+  SocialCubit.get(context).users=[];
+  SocialCubit.get(context).posts=[];
+  SocialCubit.get(context).postsId=[];
+  SocialCubit.get(context).likes=[];
+
 }
 
-void printFullText(String text)
-{
+void printFullText(String text) {
   final pattern = RegExp('.{1.800}');
   pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
 
-String token = '';
 
-String uId = '';

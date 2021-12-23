@@ -1,7 +1,9 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scoial_app/layout/social_app/cubit/cubit.dart';
 import 'package:scoial_app/layout/social_app/social_layout.dart';
+import 'package:scoial_app/modules/social_app/feeds/feeds_screen.dart';
 import 'package:scoial_app/modules/social_app/social_register/cubit/cubit.dart';
 import 'package:scoial_app/modules/social_app/social_register/cubit/states.dart';
 import 'package:scoial_app/shared/components/components.dart';
@@ -138,11 +140,18 @@ class SocialRegisterScreen extends StatelessWidget
                                 password: passwordController.text,
                                 phone: phoneController.text
                               );
+                              navigateAndFinish(
+                                context,
+                                SocialLayout(),
+                              );
+                              SocialCubit.get(context).currentIndex=0;
+
                             }
                           },
                           text: 'Register',
                           isUpperCase: true,
                         ),
+
                         fallback: (context) =>
                             Center(child: CircularProgressIndicator()),
                       ),
