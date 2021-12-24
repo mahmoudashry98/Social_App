@@ -73,7 +73,7 @@ Widget defaultFormField({
     TextFormField(
       controller: controller,
       keyboardType: type,
-      obscureText: false,
+      obscureText: isPassword,
       onFieldSubmitted: onSubmit,
       onChanged: onChange,
       validator: validate,
@@ -86,15 +86,14 @@ Widget defaultFormField({
           ),
           suffixIcon: suffix != null
               ? IconButton(
-                  onPressed: suffixPressed,
-                  icon: Icon(
-                    suffix,
-                  ),
-                )
+            onPressed: suffixPressed,
+            icon: Icon(
+              suffix,
+            ),
+          )
               : null,
-          border: OutlineInputBorder()),
+          ),
     );
-
 Widget buildTaskItem(Map model, context) => Padding(
       padding: const EdgeInsets.all(20.0),
       child: Row(

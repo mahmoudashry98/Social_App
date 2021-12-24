@@ -5,8 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scoial_app/layout/social_app/social_layout.dart';
-import 'package:scoial_app/modules/social_app/social_login/cubit/cubit.dart';
-import 'package:scoial_app/modules/social_app/social_login/social_login_screen.dart';
+import 'package:scoial_app/modules/social_app/social_login/login_screen.dart';
 import 'package:scoial_app/shared/components/components.dart';
 import 'package:scoial_app/shared/components/constants.dart';
 import 'package:scoial_app/shared/cubit/cubit.dart';
@@ -29,10 +28,6 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  var token = await FirebaseMessaging.instance.getToken();
-  print(token);
-  print('//////////////');
-  print(uId);
 
   //foreground fcm
   FirebaseMessaging.onMessage.listen((event) {
@@ -60,22 +55,11 @@ void main() async {
   //bool isDark = CacheHelper.getData(key: 'isDark');
 
   Widget widget;
-  // bool onBoarding = CacheHelper.getData(key: 'onBoarding');
-  //token = CacheHelper.getData(key: 'token');
   uId = CacheHelper.getData(key: 'uId');
-
-  // if (onBoarding != null) {
-  //   if (token != null)
-  //     widget = ShopLayout();
-  //   else
-  //     widget = ShopLoginScreen();
-  // } else {
-  //   widget = OnBoardingScreen();
-  // }
   if (uId != null) {
     widget = SocialLayout();
   } else {
-    widget = SocialLoginScreen();
+    widget = LoginScreen();
   }
 
   runApp(MyApp(

@@ -12,7 +12,7 @@ import 'package:scoial_app/modules/social_app/chats/chats_screen.dart';
 import 'package:scoial_app/modules/social_app/feeds/feeds_screen.dart';
 import 'package:scoial_app/modules/social_app/new_post/post_screen.dart';
 import 'package:scoial_app/modules/social_app/settings/settings_screen.dart';
-import 'package:scoial_app/modules/social_app/social_login/social_login_screen.dart';
+import 'package:scoial_app/modules/social_app/social_login/login_screen.dart';
 import 'package:scoial_app/modules/social_app/users/users_screen.dart';
 import 'package:scoial_app/shared/components/components.dart';
 import 'package:scoial_app/shared/components/constants.dart';
@@ -429,7 +429,7 @@ class SocialCubit extends Cubit<SocialStates> {
       userModel = null;
       uId = '';
       CacheHelper.removeData(key: 'uId');
-      navigateAndFinish(context, SocialLoginScreen());
+      navigateAndFinish(context, LoginScreen());
       currentIndex = 0;
       emit(SocialLogOutSuccessState());
     }).catchError((error) {

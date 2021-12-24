@@ -1,5 +1,5 @@
 import 'package:scoial_app/layout/social_app/cubit/cubit.dart';
-import 'package:scoial_app/modules/social_app/social_login/social_login_screen.dart';
+import 'package:scoial_app/modules/social_app/social_login/login_screen.dart';
 import 'package:scoial_app/shared/components/components.dart';
 import 'package:scoial_app/shared/network/local/cache_helper.dart';
 
@@ -21,7 +21,7 @@ void signOut(context) {
   // uId = CacheHelper.getData(key: 'uId');
   navigateAndFinish(
     context,
-    SocialLoginScreen(),
+    LoginScreen(),
   );
   SocialCubit.get(context).currentIndex=0;
   SocialCubit.get(context).users=[];
