@@ -1,4 +1,7 @@
 # social_app
+Flutter App
+
+# Getting Started
 This project is a starting point for a Flutter application.
 
 Flutter e-Commerce application using Bloc, Firebase, and shared preferences.
