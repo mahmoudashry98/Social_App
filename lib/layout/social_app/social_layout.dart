@@ -21,12 +21,12 @@ class SocialLayout extends StatelessWidget {
             title: Text(
               cubit.title[cubit.currentIndex],
             ),
-            actions: [
-              IconButton(
-                  icon: Icon(Icons.notification_important_rounded),
-                  onPressed: () {}),
-              IconButton(icon: Icon(Icons.search_outlined), onPressed: () {}),
-            ],
+            // actions: [
+            //   IconButton(
+            //       icon: Icon(Icons.notification_important_rounded),
+            //       onPressed: () {}),
+            //   IconButton(icon: Icon(Icons.search_outlined), onPressed: () {}),
+            // ],
           ),
           body: cubit.screens[cubit.currentIndex],
           bottomNavigationBar: BottomNavigationBar(
@@ -42,7 +42,7 @@ class SocialLayout extends StatelessWidget {
               BottomNavigationBarItem(
                   icon: Icon(Icons.post_add), label: 'Post'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.location_on), label: 'Users'),
+                  icon: Icon(Icons.person_rounded), label: 'Users'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.settings), label: 'Setting'),
             ],

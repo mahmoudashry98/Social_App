@@ -16,8 +16,7 @@ import 'package:scoial_app/shared/style/color/themes.dart';
 import 'layout/social_app/cubit/cubit.dart';
 import 'shared/bloc_observer.dart';
 
-Future <void> _firebaseMessagingBackgroundHandler(RemoteMessage message)
-async{
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('on background message');
   print(message.data.toString());
   showToast(text: 'on background message', state: ToastStates.SUCCESS);
@@ -63,7 +62,6 @@ void main() async {
   }
 
   runApp(MyApp(
-    //isDark: isDark,
     startWidget: widget,
   ));
 }
@@ -71,11 +69,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   //final bool isDark;
   final Widget startWidget;
-  MyApp(
-      {
-      //this.isDark,
-      this.startWidget});
-
+  MyApp({this.startWidget});
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -89,9 +83,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (BuildContext context) => SocialCubit()
               ..getUserData()
-              ..getPosts()
-        ),
-
+              ..getPosts()),
       ],
       child: BlocConsumer<AppCubit, AppStates>(
         listener: (context, state) {},
@@ -99,10 +91,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode:
-                  //AppCubit.get(context).isDark ? ThemeMode.dark :
-                  ThemeMode.light,
+              themeMode: ThemeMode.light,
               home: startWidget);
         },
       ),
@@ -112,9 +101,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
   final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }

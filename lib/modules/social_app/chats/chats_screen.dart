@@ -15,6 +15,7 @@ class ChatsScreen extends StatelessWidget {
     return BlocConsumer<SocialCubit, SocialStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        var users=SocialCubit.get(context).users;
         return ConditionalBuilder(
           condition:  SocialCubit.get(context).users.length >0,
           builder: (context) => ListView.separated(
@@ -23,7 +24,18 @@ class ChatsScreen extends StatelessWidget {
             separatorBuilder: (context, index) => myDivider(),
             itemCount:  SocialCubit.get(context).users.length,
           ),
-          fallback: (context) => Center(child: CircularProgressIndicator()),
+          fallback:(context) => users.length == 0
+              ? Column(children: [
+            Spacer(),
+            Center(
+              child: Text(
+                'No Users yet',
+                style: TextStyle(color: Colors.black38, fontSize: 35),
+              ),
+            ),
+            Spacer(),
+          ])
+              : Center(child: CircularProgressIndicator()),
         );
       },
     );

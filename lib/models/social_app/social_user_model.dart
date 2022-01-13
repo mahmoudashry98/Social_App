@@ -17,9 +17,9 @@ class SocialUserModel
     @required this.name,
     @required this.email,
     @required this.phone,
-    @required this.bio,
+    this.bio,
     @required this.image,
-    @required this.cover,
+    this.cover,
     @required this.uId,
     @required this.isEmailVerified,
 });

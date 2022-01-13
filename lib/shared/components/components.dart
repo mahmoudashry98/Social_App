@@ -1,6 +1,7 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scoial_app/shared/style/color/color.dart';
 
 Widget defaultTextButton({
   @required Function function,
@@ -8,12 +9,15 @@ Widget defaultTextButton({
 }) =>
     TextButton(
       onPressed: function,
-      child: Text(text),
+      child: Text(text,
+      style: TextStyle(
+        color: defaultColor
+      ),),
     );
 
 Widget defaultButton({
   double width = double.infinity,
-  Color background = Colors.blue,
+  Color background = defaultColor,
   bool isUpperCase = true,
   double radius = 3.0,
   @required Function function,

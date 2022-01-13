@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:scoial_app/layout/social_app/cubit/cubit.dart';
 import 'package:scoial_app/layout/social_app/cubit/states.dart';
 import 'package:scoial_app/modules/social_app/feeds/feeds_screen.dart';
 import 'package:scoial_app/shared/components/components.dart';
+import 'package:scoial_app/shared/style/color/color.dart';
 
+// ignore: must_be_immutable
 class NewPostScreen extends StatelessWidget {
-
   var textController = TextEditingController();
 
   @override
@@ -14,6 +16,7 @@ class NewPostScreen extends StatelessWidget {
     return BlocConsumer<SocialCubit, SocialStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        var model = SocialCubit.get(context).userModel;
         return Scaffold(
           appBar: defaultAppBar(
             context: context,
@@ -22,10 +25,12 @@ class NewPostScreen extends StatelessWidget {
               defaultTextButton(
                 function: () {
                   var now = DateTime.now();
+                  String formattedDate =
+                      DateFormat.MMMEd().add_jm().format(now);
                   if (SocialCubit.get(context).postImage == null) {
                     SocialCubit.get(context).createPost(
                       text: textController.text,
-                      dateTime: now.toString(),
+                      dateTime: formattedDate.toString(),
                     );
                   } else {
                     SocialCubit.get(context).uploadPostImage(
@@ -34,7 +39,7 @@ class NewPostScreen extends StatelessWidget {
                     );
                   }
 
-                  navigateTo(context,FeedsScreen());
+                  navigateTo(context, FeedsScreen());
                 },
                 text: 'Post',
               )
@@ -52,8 +57,7 @@ class NewPostScreen extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 25.0,
-                      backgroundImage: NetworkImage(
-                          'https://image.freepik.com/free-photo/horizontal-shot-happy-woman-keeps-hands-chest-smiles-gladfully-reacts-getting-unexpected-gift-wears-transparent-glasses-jumper-isolated-brown-wall_273609-44106.jpg'),
+                      backgroundImage: NetworkImage('${model.image}'),
                     ),
                     SizedBox(
                       width: 15.0,
@@ -62,7 +66,7 @@ class NewPostScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            'Mahmoud Ashry',
+                            '${model.name}',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                           SizedBox(
@@ -104,6 +108,7 @@ class NewPostScreen extends StatelessWidget {
                           child: Icon(
                             Icons.close,
                             size: 16.0,
+                            color: defaultColor,
                           ),
                         ),
                         onPressed: () {
@@ -112,7 +117,9 @@ class NewPostScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                SizedBox(height: 20.0),
+                SizedBox(
+                    height: 20.0
+                ),
                 Row(
                   children: [
                     Expanded(
@@ -123,18 +130,33 @@ class NewPostScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.image),
+                            Icon(
+                              Icons.image,
+                              color: defaultColor,
+                            ),
                             SizedBox(
                               width: 5.0,
                             ),
-                            Text('add photo')
+                            Text(
+                              'add photo',
+                              style: TextStyle(
+                                color: defaultColor,
+                              ),
+                            )
                           ],
                         ),
                       ),
                     ),
                     Expanded(
-                      child:
-                          TextButton(onPressed: () {}, child: Text('# tags')),
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          '# tags',
+                          style: TextStyle(
+                            color: defaultColor,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 )

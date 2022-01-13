@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scoial_app/layout/social_app/cubit/cubit.dart';
 import 'package:scoial_app/layout/social_app/cubit/states.dart';
+import 'package:scoial_app/modules/social_app/social_register/cubit/cubit.dart';
 import 'package:scoial_app/shared/components/components.dart';
 
 class EditProfileScreen extends StatelessWidget {
@@ -15,12 +16,14 @@ class EditProfileScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         var userModel = SocialCubit.get(context).userModel;
-        var profileImage = SocialCubit.get(context).profileImage;
+        var profileImage = SocialRegisterCubit.get(context).profileImage;
         var coverImage = SocialCubit.get(context).coverImage;
         nameController.text = userModel.name;
         bioController.text = userModel.bio;
         phoneController.text = userModel.phone;
+
         return Scaffold(
+          ///appbar , update button
           appBar: defaultAppBar(
             context: context,
             title: 'Edit Profile',
@@ -58,6 +61,7 @@ class EditProfileScreen extends StatelessWidget {
                       children: [
                         Align(
                           alignment: AlignmentDirectional.topCenter,
+                          ///ProfileImage,CoverImage,and IconButtonCamera
                           child: Stack(
                             alignment: AlignmentDirectional.topEnd,
                             children: [
@@ -119,7 +123,7 @@ class EditProfileScreen extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  SocialCubit.get(context).getProfileImage();
+                                  SocialRegisterCubit.get(context).getProfileImage();
                                 },
                               ),
                             ],
@@ -131,11 +135,11 @@ class EditProfileScreen extends StatelessWidget {
                   SizedBox(
                     height: 20.0,
                   ),
-                  if (SocialCubit.get(context).profileImage != null ||
+                  if (SocialRegisterCubit.get(context).profileImage != null ||
                       SocialCubit.get(context).coverImage != null)
                     Row(
                       children: [
-                        if (SocialCubit.get(context).profileImage != null)
+                        if (SocialRegisterCubit.get(context).profileImage != null)
                           Expanded(
                             child: Column(
                               children: [
@@ -166,8 +170,7 @@ class EditProfileScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 defaultButton(
-                                  function: ()
-                                  {
+                                  function: () {
                                     SocialCubit.get(context).uploadCoverImage(
                                       name: nameController.text,
                                       phone: phoneController.text,

@@ -45,13 +45,14 @@ class SocialCubit extends Cubit<SocialStates> {
     FeedsScreen(),
     ChatsScreen(),
     NewPostScreen(),
-    UsersScreen(),
+    UserScreen(),
     SettingsScreen(),
   ];
   List<String> title = ['Home', 'Chats', 'New Post', 'Users', 'Settings'];
 
   void changeBottomNav(int index) {
     if(index == 1) getUsers();
+    if(index == 3) getUsers();
     if(index == 4) getUserData();
     if (index == 2)
       emit(SocialNewPostState());
@@ -61,15 +62,15 @@ class SocialCubit extends Cubit<SocialStates> {
     }
   }
 
-  File profileImage;
-  var picker = ImagePicker();
+  File editProfileImage;
+
 
   Future<void> getProfileImage() async {
     final pickedFile = await picker.getImage(
       source: ImageSource.gallery,
     );
     if (pickedFile != null) {
-      profileImage = File(pickedFile.path);
+      editProfileImage = File(pickedFile.path);
       emit(SocialProfileImagePickedSuccessState());
     } else {
       print('No image selected');
@@ -78,6 +79,7 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   File coverImage;
+  var picker = ImagePicker();
 
   Future<void> getCoverImage() async {
     final pickedFile = await picker.getImage(
@@ -100,11 +102,11 @@ class SocialCubit extends Cubit<SocialStates> {
     emit(SocialUserUpdateLoadingState());
     firebase_storage.FirebaseStorage.instance
         .ref()
-        .child('users/${Uri.file(profileImage.path).pathSegments.last}')
-        .putFile(profileImage)
+        .child('users/${Uri.file(editProfileImage.path).pathSegments.last}')
+        .putFile(editProfileImage)
         .then((value) {
       value.ref.getDownloadURL().then((value) {
-        //emit(SocialUploadProfileImageSuccessState());
+        emit(SocialUploadProfileImageSuccessState());
         print(value);
         updateUser(
           name: name,
@@ -120,6 +122,7 @@ class SocialCubit extends Cubit<SocialStates> {
       emit(SocialUploadProfileImageErrorState());
     });
   }
+
 
   void uploadCoverImage({
     @required String name,
@@ -150,25 +153,6 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  // void updateUserImages({
-  //   @required String name,
-  //   @required String phone,
-  //   @required String bio,
-  // }) {
-  //   emit(SocialUserUpdateLoadingState());
-  //   if (coverImage != null) {
-  //     uploadCoverImage();
-  //   } else if (profileImage != null) {
-  //     uploadProfileImage();
-  //   } else if (coverImage != null && profileImage != null) {
-  //   } else {
-  //     updateUser(
-  //       name: name,
-  //       phone: phone,
-  //       bio: bio,
-  //     );
-  //   }
-  // }
 
   void updateUser({
     @required String name,
@@ -245,6 +229,7 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+
   void createPost({
     @required String text,
     @required String dateTime,
@@ -303,6 +288,7 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+
   void likePost(String postId) {
     FirebaseFirestore.instance
         .collection('posts')
@@ -322,8 +308,7 @@ class SocialCubit extends Cubit<SocialStates> {
 
   List <SocialUserModel> users = [];
 
-  void getUsers ()
-  {
+  void getUsers () {
     if(users.length == 0)
     FirebaseFirestore.instance
         .collection('users')
@@ -396,8 +381,7 @@ class SocialCubit extends Cubit<SocialStates> {
 
   List<MessageModel> message = [];
 
-  void getMessages({@required String receiverId})
-  {
+  void getMessages({@required String receiverId}) {
     FirebaseFirestore.instance
         .collection('users')
         .doc(userModel.uId)
@@ -420,11 +404,11 @@ class SocialCubit extends Cubit<SocialStates> {
   Future<void> logOut(context) async {
     await FirebaseAuth.instance.signOut().then((value) {
       users = [];
-      // messages = [];
+      message = [];
       posts = [];
       postsId = [];
       likes = [];
-      profileImage = null;
+      editProfileImage = null;
       coverImage = null;
       userModel = null;
       uId = '';

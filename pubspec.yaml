@@ -65,6 +65,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/img.png
+    - assets/images/google-logo-9825.png
 
   # To add assets to your application, add an assets section, like this:
 

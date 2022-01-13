@@ -55,19 +55,14 @@ ThemeData lightTheme = ThemeData(
   primaryColor: defaultColor,
   scaffoldBackgroundColor: Colors.white,
   appBarTheme: AppBarTheme(
-      backwardsCompatibility: false,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.grey,
-        statusBarBrightness: Brightness.dark,
-      ),
-      iconTheme: IconThemeData(color: Colors.black),
-      backgroundColor: Colors.white,
-      elevation: 0.0,
-      titleTextStyle: TextStyle(
-          color: Colors.black,
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-      )),
+    backgroundColor: Colors.amber,
+    elevation: 0.0,
+    backwardsCompatibility: false,
+    systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor:Colors.amber,
+        statusBarIconBrightness: Brightness.dark
+    ),
+  ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
     selectedItemColor: defaultColor,

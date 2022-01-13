@@ -6,7 +6,9 @@ import 'package:scoial_app/layout/social_app/cubit/states.dart';
 import 'package:scoial_app/modules/social_app/edit_profile/edit_profile_screen.dart';
 import 'package:scoial_app/shared/components/components.dart';
 import 'package:scoial_app/shared/components/constants.dart';
+import 'package:scoial_app/shared/style/color/color.dart';
 
+// ignore: must_be_immutable
 class SettingsScreen extends StatelessWidget {
   var nameController = TextEditingController();
   var imageController = TextEditingController();
@@ -28,7 +30,7 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  height: 180.0,
+                  height: 200.0,
                   child: Stack(
                     alignment: AlignmentDirectional.bottomCenter,
                     children: [
@@ -174,6 +176,9 @@ class SettingsScreen extends StatelessWidget {
                         onPressed: () {},
                         child: Text(
                           'Add Photos',
+                          style: TextStyle(
+                            color: defaultColor,
+                          ),
                         ),
                       ),
                     ),
@@ -187,6 +192,7 @@ class SettingsScreen extends StatelessWidget {
                       child: Icon(
                         Icons.edit,
                         size: 16.0,
+                        color: defaultColor,
                       ),
                     ),
 
@@ -200,6 +206,7 @@ class SettingsScreen extends StatelessWidget {
                       child: Icon(
                         Icons.logout,
                         size: 16.0,
+                        color: defaultColor,
                       ),
                     )
                   ],
