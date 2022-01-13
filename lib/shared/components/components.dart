@@ -11,7 +11,8 @@ Widget defaultTextButton({
       onPressed: function,
       child: Text(text,
       style: TextStyle(
-        color: defaultColor
+        color: Colors.white,
+        fontSize: 18
       ),),
     );
 
@@ -56,6 +57,7 @@ Widget defaultAppBar({
   ),
   title: Text(
     title,
+    style: TextStyle(color: Colors.white),
   ),
   titleSpacing: 0.0,
   actions: actions,

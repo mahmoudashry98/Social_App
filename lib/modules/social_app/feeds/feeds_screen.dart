@@ -1,6 +1,7 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:scoial_app/layout/social_app/cubit/cubit.dart';
 import 'package:scoial_app/layout/social_app/cubit/states.dart';
 import 'package:scoial_app/models/social_app/post_model.dart';
@@ -8,6 +9,8 @@ import 'package:scoial_app/shared/components/components.dart';
 import 'package:scoial_app/shared/style/color/color.dart';
 
 class FeedsScreen extends StatelessWidget {
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+  GlobalKey<LiquidPullToRefreshState>();
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
@@ -16,24 +19,60 @@ class FeedsScreen extends StatelessWidget {
         var posts = SocialCubit.get(context).posts;
         return ConditionalBuilder(
           condition: SocialCubit.get(context).posts.length > 0,
-          builder: (context) => SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => buildPostItem(
-                      SocialCubit.get(context).posts[index], context, index),
-                  itemCount: SocialCubit.get(context).posts.length,
-                  separatorBuilder: (context, index) => SizedBox(
+          builder: (context) => LiquidPullToRefresh(
+            key: _refreshIndicatorKey,
+            onRefresh: SocialCubit.get(context).handleRefresh,
+            showChildOpacityTransition: false,
+            color: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: defaultColor,
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    elevation: 5.0,
+                    margin: EdgeInsets.all(8.0),
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      children: [
+                        Image(
+                          image: NetworkImage(
+                              'https://image.freepik.com/free-photo/portrait-happy-young-woman-holding-empty-speech-bubble-standing-isolated-yellow-wall_231208-10128.jpg'),
+                          fit: BoxFit.cover,
+                          height: 200.0,
+                          width: double.infinity,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'communicate with friends',
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
                     height: 8.0,
                   ),
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),
-              ],
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) => buildPostItem(
+                        SocialCubit.get(context).posts[index], context, index),
+                    itemCount: SocialCubit.get(context).posts.length,
+                    separatorBuilder: (context, index) => SizedBox(
+                      height: 8.0,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                ],
+              ),
             ),
           ),
           fallback: (context) => posts.length == 0

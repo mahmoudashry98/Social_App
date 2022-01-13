@@ -14,7 +14,17 @@ class NewPostScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is SocialCreatePostSuccessState &&
+            SocialCubit.get(context).postImage != null) {
+          SocialCubit.get(context).removePostImage();
+          textController.clear();
+          Navigator.pop(context);
+        }else if (state is SocialCreatePostSuccessState ){
+          textController.clear();
+          Navigator.pop(context);
+        }
+      },
       builder: (context, state) {
         var model = SocialCubit.get(context).userModel;
         return Scaffold(
@@ -38,8 +48,6 @@ class NewPostScreen extends StatelessWidget {
                       dateTime: now.toString(),
                     );
                   }
-
-                  navigateTo(context, FeedsScreen());
                 },
                 text: 'Post',
               )
@@ -92,18 +100,19 @@ class NewPostScreen extends StatelessWidget {
                     children: [
                       Container(
                         width: double.infinity,
-                        height: 140.0,
+                        height: 160.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4.0),
                           image: DecorationImage(
                             image:
                                 FileImage(SocialCubit.get(context).postImage),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           ),
                         ),
                       ),
                       IconButton(
                         icon: CircleAvatar(
+                          backgroundColor: Colors.white,
                           radius: 20.0,
                           child: Icon(
                             Icons.close,

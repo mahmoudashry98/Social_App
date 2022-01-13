@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -278,13 +279,13 @@ class SocialCubit extends Cubit<SocialStates> {
           likes.add(value.docs.length);
           postsId.add(element.id);
           posts.add(PostModel.fromJson(element.data()));
-          emit(SocialGetPostSuccessState());
+          emit(SocialGetPostsSuccessState());
         });
 
       });
     }).catchError((error)
     {
-      emit(SocialGetPostErrorState(error.toString()));
+      emit(SocialGetPostsErrorState(error.toString()));
     });
   }
 
@@ -421,5 +422,18 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+
+  Future<void> handleRefresh() {
+    final Completer<void> completer = Completer<void>();
+    Timer(const Duration(seconds: 3), () {
+      completer.complete();
+    });
+    return completer.future.then<void>((_) {
+       if(posts.length == 0)
+         getPosts();
+        emit(SocialGetPostsSuccessState());
+      });
+
+  }
 
 }
