@@ -25,53 +25,56 @@ class FeedsScreen extends StatelessWidget {
             showChildOpacityTransition: false,
             color: Theme.of(context).scaffoldBackgroundColor,
             backgroundColor: defaultColor,
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  Card(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    elevation: 5.0,
-                    margin: EdgeInsets.all(8.0),
-                    child: Stack(
-                      alignment: AlignmentDirectional.bottomEnd,
-                      children: [
-                        Image(
-                          image: NetworkImage(
-                              'https://image.freepik.com/free-photo/portrait-happy-young-woman-holding-empty-speech-bubble-standing-isolated-yellow-wall_231208-10128.jpg'),
-                          fit: BoxFit.cover,
-                          height: 200.0,
-                          width: double.infinity,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'communicate with friends',
-                            style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              color: Colors.white,
-                            ),
+            child: Container(
+              height: double.infinity,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    Card(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      elevation: 5.0,
+                      margin: EdgeInsets.all(8.0),
+                      child: Stack(
+                        alignment: AlignmentDirectional.bottomEnd,
+                        children: [
+                          Image(
+                            image: NetworkImage(
+                                'https://image.freepik.com/free-photo/portrait-happy-young-woman-holding-empty-speech-bubble-standing-isolated-yellow-wall_231208-10128.jpg'),
+                            fit: BoxFit.cover,
+                            height: 200.0,
+                            width: double.infinity,
                           ),
-                        )
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'communicate with friends',
+                              style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => buildPostItem(
-                        SocialCubit.get(context).posts[index], context, index),
-                    itemCount: SocialCubit.get(context).posts.length,
-                    separatorBuilder: (context, index) => SizedBox(
+                    SizedBox(
                       height: 8.0,
                     ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                ],
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) => buildPostItem(
+                          SocialCubit.get(context).posts[index], context, index),
+                      itemCount: SocialCubit.get(context).posts.length,
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: 8.0,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -130,6 +133,7 @@ class FeedsScreen extends StatelessWidget {
           children: [
             Row(
               children: [
+                //Image Account
                 CircleAvatar(
                   radius: 25.0,
                   backgroundImage: NetworkImage('${model.image}'),
@@ -137,6 +141,7 @@ class FeedsScreen extends StatelessWidget {
                 SizedBox(
                   width: 15.0,
                 ),
+                //Name, Icon Profile(CheckIcon), DatTime
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,54 +184,12 @@ class FeedsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 20.0),
               child: myDivider(),
             ),
+            //Post
             Text(
               '${model.text}',
               style: Theme.of(context).textTheme.subtitle1,
             ),
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 10.0, top: 5.0),
-            //   child: Container(
-            //     width: double.infinity,
-            //     child: Wrap(
-            //       children: [
-            //         Padding(
-            //           padding: const EdgeInsetsDirectional.only(end: 5.0),
-            //           child: Container(
-            //             height: 25.0,
-            //             child: MaterialButton(
-            //               onPressed: () {},
-            //               minWidth: 1.0,
-            //               padding: EdgeInsets.zero,
-            //               child: Text(
-            //                 '#software',
-            //                 style: TextStyle(
-            //                   color: defaultColor,
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //         Padding(
-            //           padding: const EdgeInsetsDirectional.only(end: 5.0),
-            //           child: Container(
-            //             height: 25.0,
-            //             child: MaterialButton(
-            //               onPressed: () {},
-            //               minWidth: 1.0,
-            //               padding: EdgeInsets.zero,
-            //               child: Text(
-            //                 '#Flutter',
-            //                 style: TextStyle(
-            //                   color: defaultColor,
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
+            //If Post Have Image
             if (model.postImage != '')
               Padding(
                 padding: const EdgeInsetsDirectional.only(
@@ -234,72 +197,68 @@ class FeedsScreen extends StatelessWidget {
                 ),
                 child: Container(
                   width: double.infinity,
-                  height: 140.0,
+                  height: 180.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4.0),
                     image: DecorationImage(
                       image: NetworkImage('${model.postImage}'),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ),
               ),
+            //Row Likes
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
               child: Row(
                 children: [
                   Expanded(
-                    child: InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.favorite_border,
-                              size: 16.0,
-                              color: Colors.red,
-                            ),
-                            SizedBox(
-                              width: 5.0,
-                            ),
-                            Text(
-                              '${SocialCubit.get(context).likes[index]}',
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                          ],
-                        ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.favorite_border,
+                            size: 16.0,
+                            color: Colors.red,
+                          ),
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          Text(
+                            '${SocialCubit.get(context).likes[index]}',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                        ],
                       ),
-                      onTap: () {},
                     ),
                   ),
                   Expanded(
-                    child: InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(
-                              Icons.comment,
-                              size: 16.0,
-                              color: Colors.amber,
-                            ),
-                            SizedBox(
-                              width: 5.0,
-                            ),
-                            Text(
-                              '0 comments',
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                          ],
-                        ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(
+                            Icons.comment,
+                            size: 16.0,
+                            color: Colors.amber,
+                          ),
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          Text(
+                            '0 comments',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                        ],
                       ),
-                      onTap: () {},
                     ),
                   ),
                 ],
               ),
             ),
+            //Row Comments
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: Container(
@@ -308,10 +267,58 @@ class FeedsScreen extends StatelessWidget {
                 color: Colors.grey[300],
               ),
             ),
+            //Comment
             Row(
               children: [
                 Expanded(
                   child: InkWell(
+                    onTap: (){
+                      //View Comments
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context){
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.favorite,color: Colors.red,),
+                                      SizedBox(width: 10,),
+                                      Text(
+                                        '${SocialCubit.get(context).likes[index]}',
+                                        style: Theme.of(context).textTheme.caption,
+                                      ),
+                                      Text(
+                                        ' and Other',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10,),
+                                      Icon(Icons.arrow_forward_ios),
+                                      Spacer(),
+                                      Icon(Icons.favorite_border),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 5,),
+                                myDivider(),
+                                SizedBox(height: 10,),
+                                ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) => buildComment(model, context, index,),
+                                  separatorBuilder: (context, index) => SizedBox(height: 8.0,),
+                                  itemCount: 10,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -322,11 +329,10 @@ class FeedsScreen extends StatelessWidget {
                         SizedBox(
                           width: 5.0,
                         ),
-                        Text('Write a comment ...',
-                            style: Theme.of(context).textTheme.caption),
+                         Text('Write a comment ...',
+                              style: Theme.of(context).textTheme.caption),
                       ],
                     ),
-                    onTap: () {},
                   ),
                 ),
                 InkWell(
@@ -361,4 +367,83 @@ class FeedsScreen extends StatelessWidget {
       ),
     );
   }
+
+
+  Widget buildComment(PostModel model, context,index) => Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage('${model.image}'),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Card(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                color: Colors.grey[300],
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 15,
+                    bottom: 20,
+                    left: 10,
+                    right: 10,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Mahmoud Ashry',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                        'datadnjgoldhngoidbgoihnodfighboigfhoidmnvkodhgdfioshfgiusguigfsdihugiurfhgiufhiuhgiufhgiufbvidfhguignfijbviufgbijgbiufnkdjbnfiudfd;sofjioawpehw',
+                        maxLines: 5,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 75.0),
+        child: Row(
+          children: [
+            Container(
+              child:  Text(
+                '4h',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            SizedBox(width: 10,),
+            Container(
+              child:  Text(
+                'like',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }

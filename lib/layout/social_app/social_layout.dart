@@ -42,9 +42,9 @@ class SocialLayout extends StatelessWidget {
               BottomNavigationBarItem(
                   icon: Icon(Icons.post_add), label: 'Post'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.person_rounded), label: 'Users'),
+                  icon: Icon(Icons.group), label: 'Users'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: 'Setting'),
+                  icon: Icon(Icons.person), label: 'Profile'),
             ],
           ),
         );

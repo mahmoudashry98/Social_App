@@ -12,7 +12,7 @@ import 'package:scoial_app/models/social_app/social_user_model.dart';
 import 'package:scoial_app/modules/social_app/chats/chats_screen.dart';
 import 'package:scoial_app/modules/social_app/feeds/feeds_screen.dart';
 import 'package:scoial_app/modules/social_app/new_post/post_screen.dart';
-import 'package:scoial_app/modules/social_app/settings/settings_screen.dart';
+import 'package:scoial_app/modules/social_app/profile/profile_screen.dart';
 import 'package:scoial_app/modules/social_app/social_login/login_screen.dart';
 import 'package:scoial_app/modules/social_app/users/users_screen.dart';
 import 'package:scoial_app/shared/components/components.dart';
@@ -47,7 +47,7 @@ class SocialCubit extends Cubit<SocialStates> {
     ChatsScreen(),
     NewPostScreen(),
     UserScreen(),
-    SettingsScreen(),
+    ProfileScreen(),
   ];
   List<String> title = ['Home', 'Chats', 'New Post', 'Users', 'Settings'];
 
