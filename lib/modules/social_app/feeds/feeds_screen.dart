@@ -1,24 +1,31 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:scoial_app/layout/social_app/cubit/cubit.dart';
 import 'package:scoial_app/layout/social_app/cubit/states.dart';
+import 'package:scoial_app/models/social_app/comment_model.dart';
 import 'package:scoial_app/models/social_app/post_model.dart';
+import 'package:scoial_app/models/social_app/social_user_model.dart';
 import 'package:scoial_app/shared/components/components.dart';
 import 'package:scoial_app/shared/style/color/color.dart';
 
+// ignore: must_be_immutable
 class FeedsScreen extends StatelessWidget {
+  var commentController = TextEditingController();
+  SocialUserModel userModel;
   final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
-  GlobalKey<LiquidPullToRefreshState>();
+      GlobalKey<LiquidPullToRefreshState>();
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
       listener: (context, state) {},
       builder: (context, state) {
         var posts = SocialCubit.get(context).posts;
+        var comments = SocialCubit.get(context).comments;
         return ConditionalBuilder(
-          condition: SocialCubit.get(context).posts.length > 0,
+          condition: posts.length > 0,
           builder: (context) => LiquidPullToRefresh(
             key: _refreshIndicatorKey,
             onRefresh: SocialCubit.get(context).handleRefresh,
@@ -49,9 +56,12 @@ class FeedsScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'communicate with friends',
-                              style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                color: Colors.white,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    color: Colors.white,
+                                  ),
                             ),
                           )
                         ],
@@ -64,7 +74,9 @@ class FeedsScreen extends StatelessWidget {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) => buildPostItem(
-                          SocialCubit.get(context).posts[index], context, index),
+                          SocialCubit.get(context).posts[index],
+                          context,
+                          index),
                       itemCount: SocialCubit.get(context).posts.length,
                       separatorBuilder: (context, index) => SizedBox(
                         height: 8.0,
@@ -81,31 +93,32 @@ class FeedsScreen extends StatelessWidget {
           fallback: (context) => posts.length == 0
               ? Column(children: [
                   Card(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              elevation: 5.0,
-              margin: EdgeInsets.all(8.0),
-              child: Stack(
-                alignment: AlignmentDirectional.bottomEnd,
-                children: [
-                  Image(
-                    image: NetworkImage(
-                        'https://image.freepik.com/free-photo/portrait-happy-young-woman-holding-empty-speech-bubble-standing-isolated-yellow-wall_231208-10128.jpg'),
-                    fit: BoxFit.cover,
-                    height: 200.0,
-                    width: double.infinity,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'communicate with friends',
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Colors.white,
-                      ),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    elevation: 5.0,
+                    margin: EdgeInsets.all(8.0),
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      children: [
+                        Image(
+                          image: NetworkImage(
+                              'https://image.freepik.com/free-photo/portrait-happy-young-woman-holding-empty-speech-bubble-standing-isolated-yellow-wall_231208-10128.jpg'),
+                          fit: BoxFit.cover,
+                          height: 200.0,
+                          width: double.infinity,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'communicate with friends',
+                            style:
+                                Theme.of(context).textTheme.subtitle1.copyWith(
+                                      color: Colors.white,
+                                    ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
-            ),
+                  ),
                   Spacer(),
                   Center(
                     child: Text(
@@ -121,7 +134,7 @@ class FeedsScreen extends StatelessWidget {
     );
   }
 
-  Widget buildPostItem(PostModel model, context, index) {
+  Widget buildPostItem(PostModel modelPost, context, index) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       elevation: 8.0,
@@ -136,7 +149,7 @@ class FeedsScreen extends StatelessWidget {
                 //Image Account
                 CircleAvatar(
                   radius: 25.0,
-                  backgroundImage: NetworkImage('${model.image}'),
+                  backgroundImage: NetworkImage('${modelPost.image}'),
                 ),
                 SizedBox(
                   width: 15.0,
@@ -149,7 +162,7 @@ class FeedsScreen extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            '${model.name}',
+                            '${modelPost.name}',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                           SizedBox(
@@ -162,7 +175,7 @@ class FeedsScreen extends StatelessWidget {
                           )
                         ],
                       ),
-                      Text('${model.dateTime}',
+                      Text('${modelPost.dateTime}',
                           style: Theme.of(context)
                               .textTheme
                               .caption
@@ -186,11 +199,11 @@ class FeedsScreen extends StatelessWidget {
             ),
             //Post
             Text(
-              '${model.text}',
+              '${modelPost.text}',
               style: Theme.of(context).textTheme.subtitle1,
             ),
             //If Post Have Image
-            if (model.postImage != '')
+            if (modelPost.postImage != '')
               Padding(
                 padding: const EdgeInsetsDirectional.only(
                   top: 15.0,
@@ -201,7 +214,7 @@ class FeedsScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4.0),
                     image: DecorationImage(
-                      image: NetworkImage('${model.postImage}'),
+                      image: NetworkImage('${modelPost.postImage}'),
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -247,10 +260,10 @@ class FeedsScreen extends StatelessWidget {
                           SizedBox(
                             width: 5.0,
                           ),
-                          Text(
-                            '0 comments',
-                            style: Theme.of(context).textTheme.caption,
-                          ),
+                          // Text(
+                          //   '${SocialCubit.get(context).likesComment[index]}',
+                          //   style: Theme.of(context).textTheme.caption,
+                          // ),
                         ],
                       ),
                     ),
@@ -272,47 +285,148 @@ class FeedsScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: (){
+                    onTap: () {
                       //View Comments
                       showModalBottomSheet(
+                        isScrollControlled: true,
                         context: context,
-                        builder: (context){
-                          return SingleChildScrollView(
+                        builder: (context) {
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                top: 35.0, left: 10.0, right: 10.0),
                             child: Column(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.favorite,color: Colors.red,),
-                                      SizedBox(width: 10,),
-                                      Text(
-                                        '${SocialCubit.get(context).likes[index]}',
-                                        style: Theme.of(context).textTheme.caption,
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      '${SocialCubit.get(context).likes[index]}',
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                    ),
+                                    Text(
+                                      ' and Other',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      Text(
-                                        ' and Other',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(width: 10,),
-                                      Icon(Icons.arrow_forward_ios),
-                                      Spacer(),
-                                      Icon(Icons.favorite_border),
-                                    ],
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Icon(Icons.arrow_forward_ios),
+                                    Spacer(),
+                                    Icon(Icons.favorite_border),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                myDivider(),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Expanded(
+                                  child: ListView.separated(
+                                    shrinkWrap: true,
+                                    physics: BouncingScrollPhysics(),
+                                    itemBuilder: (context, index) =>
+                                        buildComment(
+                                          SocialCubit.get(context).userModel,
+                                          SocialCubit.get(context).comments[index],
+                                          context,
+                                          index,
+                                    ),
+                                    separatorBuilder: (context, index) =>
+                                        SizedBox(
+                                      height: 8.0,
+                                    ),
+                                    itemCount: SocialCubit.get(context)
+                                        .comments
+                                        .length,
                                   ),
                                 ),
-                                SizedBox(height: 5,),
-                                myDivider(),
-                                SizedBox(height: 10,),
-                                ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) => buildComment(model, context, index,),
-                                  separatorBuilder: (context, index) => SizedBox(height: 8.0,),
-                                  itemCount: 10,
-                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      border: Border.all(
+                                        color: Colors.grey[300],
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.camera_alt),
+                                          onPressed: () {
+                                            SocialCubit.get(context)
+                                                .getCommentImage();
+                                          },
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: EdgeInsetsDirectional.only(
+                                                start: 10.0),
+                                            child: TextFormField(
+                                              controller: commentController,
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                hintText: 'write a comment...',
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 50.0,
+                                          color: defaultColor,
+                                          child: MaterialButton(
+                                            onPressed: () {},
+                                            minWidth: 1.0,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                var now = DateTime.now();
+                                                String formattedDate =
+                                                    DateFormat.MMMEd()
+                                                        .add_jm()
+                                                        .format(now);
+                                                if (SocialCubit.get(context)
+                                                        .commentImage ==
+                                                    null) {
+                                                  SocialCubit.get(context)
+                                                      .createComment(
+                                                    comment:
+                                                        commentController.text,
+                                                    dateTime: formattedDate
+                                                        .toString(),
+                                                  );
+                                                } else {
+                                                  SocialCubit.get(context)
+                                                      .uploadCommentImage(
+                                                    comment:
+                                                        commentController.text,
+                                                    dateTime: now.toString(),
+                                                  );
+                                                }
+                                              },
+                                              icon: Icon(Icons.send),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           );
@@ -329,8 +443,8 @@ class FeedsScreen extends StatelessWidget {
                         SizedBox(
                           width: 5.0,
                         ),
-                         Text('Write a comment ...',
-                              style: Theme.of(context).textTheme.caption),
+                        Text('Write a comment ...',
+                            style: Theme.of(context).textTheme.caption),
                       ],
                     ),
                   ),
@@ -368,82 +482,285 @@ class FeedsScreen extends StatelessWidget {
     );
   }
 
-
-  Widget buildComment(PostModel model, context,index) => Column(
-    children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage('${model.image}'),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Card(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                color: Colors.grey[300],
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 15,
-                    bottom: 20,
-                    left: 10,
-                    right: 10,
+  Widget buildComment(
+      SocialUserModel model, CommentModel modelComment, context, index) {
+    var comments = SocialCubit.get(context).comments;
+    return ConditionalBuilder(
+      condition: SocialCubit.get(context).comments.length > 0,
+      builder: (context) => Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage('${model.image}'),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: Colors.grey[300],
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 15,
+                        bottom: 20,
+                        left: 10,
+                        right: 10,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${model.name}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 3,
+                          ),
+                          Text(
+                            '${modelComment.comment}',
+                            maxLines: 5,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 75.0),
+            child: Row(
+              children: [
+                Container(
+                  child: Text(
+                    '${modelComment.dateTime}',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                TextButton(
+                  onPressed: () {
+                    SocialCubit.get(context).likeComment(
+                        SocialCubit.get(context).commentsId[index]);
+                  },
+                  child: Text(
+                    'like',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      fallback: (context) => comments.length == 0
+          ? Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Row(
                     children: [
-                      Text(
-                        'Mahmoud Ashry',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage('${model.image}'),
                       ),
                       SizedBox(
-                        height: 3,
+                        width: 10,
                       ),
-                      Text(
-                        'datadnjgoldhngoidbgoihnodfighboigfhoidmnvkodhgdfioshfgiusguigfsdihugiurfhgiufhiuhgiufhgiufbvidfhguignfijbviufgbijgbiufnkdjbnfiudfd;sofjioawpehw',
-                        maxLines: 5,
+                      Expanded(
+                        child: Card(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          color: Colors.grey[300],
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 15,
+                              bottom: 20,
+                              left: 10,
+                              right: 10,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${model.name}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Text(
+                                  '${modelComment.comment}',
+                                  maxLines: 5,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(left: 75.0),
-        child: Row(
-          children: [
-            Container(
-              child:  Text(
-                '4h',
-                style: TextStyle(
-                  fontSize: 18,
+                Padding(
+                  padding: const EdgeInsets.only(left: 75.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Text(
+                          '${modelComment.dateTime}',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      // TextButton(
+                      //   onPressed: () {
+                      //     SocialCubit.get(context).likeComment(
+                      //         SocialCubit.get(context).commentsId[index]);
+                      //   },
+                      //   child: Text(
+                      //     'like',
+                      //     style: TextStyle(
+                      //       fontSize: 16,
+                      //       fontWeight: FontWeight.bold,
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  ),
                 ),
+              ],
+            )
+          : Padding(
+              padding:
+                  const EdgeInsets.only(top: 35.0, left: 10.0, right: 10.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        '${SocialCubit.get(context).likes[index]}',
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                      Text(
+                        ' and Other',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(Icons.arrow_forward_ios),
+                      Spacer(),
+                      Icon(Icons.favorite_border),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  myDivider(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(
+                          color: Colors.grey[300],
+                          width: 1.0,
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.camera_alt),
+                            onPressed: () {
+                              SocialCubit.get(context).getCommentImage();
+                            },
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsetsDirectional.only(start: 10.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'write a comment...',
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 50.0,
+                            color: defaultColor,
+                            child: MaterialButton(
+                              onPressed: () {},
+                              minWidth: 1.0,
+                              child: IconButton(
+                                onPressed: () {
+                                  var now = DateTime.now();
+                                  String formattedDate =
+                                      DateFormat.MMMEd().add_jm().format(now);
+                                  if (SocialCubit.get(context).commentImage ==
+                                      null) {
+                                    SocialCubit.get(context).createComment(
+                                      comment: commentController.text,
+                                      dateTime: formattedDate.toString(),
+                                    );
+                                  } else {
+                                    SocialCubit.get(context).uploadCommentImage(
+                                      comment: commentController.text,
+                                      dateTime: now.toString(),
+                                    );
+                                  }
+                                },
+                                icon: Icon(Icons.send),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
-            SizedBox(width: 10,),
-            Container(
-              child:  Text(
-                'like',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  );
+    );
+  }
 }

@@ -17,7 +17,6 @@ class NewPostScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is SocialCreatePostSuccessState &&
             SocialCubit.get(context).postImage != null) {
-          SocialCubit.get(context).removePostImage();
           textController.clear();
           Navigator.pop(context);
         }else if (state is SocialCreatePostSuccessState ){

@@ -28,6 +28,7 @@ void signOut(context) {
   SocialCubit.get(context).posts=[];
   SocialCubit.get(context).postsId=[];
   SocialCubit.get(context).likes=[];
+  SocialCubit.get(context).likesComment=[];
 
 }
 

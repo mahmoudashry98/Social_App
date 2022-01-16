@@ -31,6 +31,7 @@ class RegisterScreen extends StatelessWidget {
               value: state.uId,
             ).then((value) async {
               SocialCubit.get(context).getPosts();
+              SocialCubit.get(context).getComments();
               SocialCubit.get(context).getUserData();
               showToast(
                 text: 'Welcome in Social App',
@@ -360,6 +361,3 @@ class RegisterScreen extends StatelessWidget {
       );
 }
 
-// function: () {
-
-// },

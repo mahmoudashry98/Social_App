@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoial_app/layout/social_app/cubit/states.dart';
+import 'package:scoial_app/models/social_app/comment_model.dart';
 import 'package:scoial_app/models/social_app/message_model.dart';
 import 'package:scoial_app/models/social_app/post_model.dart';
 import 'package:scoial_app/models/social_app/social_user_model.dart';
@@ -26,6 +27,7 @@ class SocialCubit extends Cubit<SocialStates> {
   static SocialCubit get(context) => BlocProvider.of(context);
 
   SocialUserModel userModel;
+  CommentModel modelComment;
 
   void getUserData() {
     uId = CacheHelper.getData(key: 'uId') ;
@@ -52,6 +54,11 @@ class SocialCubit extends Cubit<SocialStates> {
   List<String> title = ['Home', 'Chats', 'New Post', 'Users', 'Settings'];
 
   void changeBottomNav(int index) {
+    if(index == 0){
+      getPosts();
+      getUserData();
+      getComments();
+    }
     if(index == 1) getUsers();
     if(index == 3) getUsers();
     if(index == 4) getUserData();
@@ -65,7 +72,6 @@ class SocialCubit extends Cubit<SocialStates> {
 
   File editProfileImage;
 
-
   Future<void> getProfileImage() async {
     final pickedFile = await picker.getImage(
       source: ImageSource.gallery,
@@ -78,7 +84,6 @@ class SocialCubit extends Cubit<SocialStates> {
       emit(SocialProfileImagePickedErrorState());
     }
   }
-
   File coverImage;
   var picker = ImagePicker();
 
@@ -186,6 +191,7 @@ class SocialCubit extends Cubit<SocialStates> {
 
   File postImage;
 
+
   Future<void> getPostImage() async {
     final pickedFile = await picker.getImage(
       source: ImageSource.gallery,
@@ -197,6 +203,53 @@ class SocialCubit extends Cubit<SocialStates> {
       print('No image selected');
       emit(SocialPostImagePickedErrorState());
     }
+  }
+  void getPosts() {
+    if(posts.length == 0)
+    FirebaseFirestore.instance
+        .collection('posts')
+        .get()
+        .then((value)
+    {
+      value.docs.forEach((element)
+      {
+        element.reference.collection('likes').get().then((value)
+        {
+          likes.add(value.docs.length);
+          postsId.add(element.id);
+          posts.add(PostModel.fromJson(element.data()));
+          emit(SocialGetPostsSuccessState());
+        });
+
+      });
+    }).catchError((error)
+    {
+      emit(SocialGetPostsErrorState(error.toString()));
+    });
+  }
+
+  void getComments() {
+    if(comments.length == 0)
+    FirebaseFirestore.instance
+        .collection('comments')
+        .get()
+        .then((value)
+    {
+      value.docs.forEach((element)
+      {
+        element.reference.collection('likesComments').get().then((value)
+        {
+          likesComment.add(value.docs.length);
+          commentsId.add(element.id);
+          comments.add(CommentModel.fromJson(element.data()));
+          emit(SocialGetCommentsSuccessState());
+        });
+
+      });
+    }).catchError((error)
+    {
+      emit(SocialGetCommentsErrorState(error.toString()));
+    });
   }
 
   void removePostImage() {
@@ -257,39 +310,107 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+  File commentImage;
+
+  Future<void> getCommentImage() async {
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedFile != null) {
+      commentImage = File(pickedFile.path);
+      emit(SocialCommentImagePickedSuccessState());
+    } else {
+      print('No image selected');
+      emit(SocialCommentImagePickedErrorState());
+    }
+  }
 
 
-  List <PostModel> posts=[];
+  void removeCommentImage() {
+    commentImage = null;
+    emit(SocialRemoveCommentImageState());
+  }
 
-  List <String> postsId=[];
-
-
-  List <int> likes=[];
-
-  void getPosts() {
-    FirebaseFirestore.instance
-        .collection('posts')
-        .get()
-        .then((value)
-    {
-      value.docs.forEach((element)
-      {
-        element.reference.collection('likes').get().then((value)
-        {
-          likes.add(value.docs.length);
-          postsId.add(element.id);
-          posts.add(PostModel.fromJson(element.data()));
-          emit(SocialGetPostsSuccessState());
-        });
-
+  void uploadCommentImage({
+    @required String comment,
+    @required String dateTime,
+  }) {
+    emit(SocialCreateCommentLoadingState());
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('comments/${Uri.file(commentImage.path).pathSegments.last}')
+        .putFile(commentImage)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        print(value);
+        createComment(
+          comment: comment,
+          dateTime: dateTime,
+          commentImage: value,
+        );
+      }).catchError((error) {
+        emit(SocialCreateCommentErrorState());
+        print(value);
       });
-    }).catchError((error)
-    {
-      emit(SocialGetPostsErrorState(error.toString()));
+    }).catchError((error) {
+      emit(SocialCreateCommentErrorState());
+    });
+  }
+
+  void createComment({
+    @required String comment,
+    @required String dateTime,
+    String commentImage,
+  }) {
+    emit(SocialCreateCommentLoadingState());
+
+    CommentModel model = CommentModel(
+      name: userModel.name,
+      image: userModel.image,
+      uId: userModel.uId,
+      commentImage: commentImage ?? '',
+      comment: comment,
+      dateTime: dateTime,
+    );
+
+    FirebaseFirestore.instance
+        .collection('comments')
+        .add(model.toMap())
+        .then((value) {
+      emit(SocialCreateCommentSuccessState());
+    }).catchError((error) {
+      emit(SocialCreateCommentErrorState());
     });
   }
 
 
+
+  List <PostModel> posts=[];
+  List <String> postsId=[];
+
+  List <CommentModel> comments=[];
+  List <String> commentsId=[];
+
+
+  List <int> likesComment=[];
+  void likeComment(String commentId) {
+    FirebaseFirestore.instance
+        .collection('comments')
+        .doc(commentId)
+        .collection('likesComment')
+        .doc(userModel.uId)
+        .set({
+      'like': true,
+    })
+        .then((value)
+    {
+      emit(SocialLikeCommentSuccessState());
+    }).catchError((error){
+      emit(SocialLikeCommentErrorState(error.toString()));
+    });
+  }
+
+  List <int> likes=[];
   void likePost(String postId) {
     FirebaseFirestore.instance
         .collection('posts')
@@ -308,7 +429,6 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   List <SocialUserModel> users = [];
-
   void getUsers () {
     if(users.length == 0)
     FirebaseFirestore.instance
@@ -408,7 +528,10 @@ class SocialCubit extends Cubit<SocialStates> {
       message = [];
       posts = [];
       postsId = [];
+      comments = [];
+      commentsId = [];
       likes = [];
+      likesComment =[];
       editProfileImage = null;
       coverImage = null;
       userModel = null;

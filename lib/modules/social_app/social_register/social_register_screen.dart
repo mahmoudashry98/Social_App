@@ -60,6 +60,7 @@ class _SocialRegisterScreenState extends State<SocialRegisterScreen> {
               value: state.uId,
             ).then((value) async {
               SocialCubit.get(context).getPosts();
+              SocialCubit.get(context).getComments();
               SocialCubit.get(context).getUserData();
               showToast(
                 text: 'Welcome in Social App',
